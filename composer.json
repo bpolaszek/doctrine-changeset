@@ -1,38 +1,63 @@
 {
+    "name": "bentools/doctrine-changeset",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
+        "doctrine/orm": "~2.16"
+    },
+    "require-dev": {
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-sqlite3": "*",
+        "doctrine/doctrine-bundle": "^2.10",
+        "doctrine/doctrine-migrations-bundle": "^3.2",
+        "dunglas/doctrine-json-odm": "^1.3",
+        "friendsofphp/php-cs-fixer": "^3.35",
+        "pestphp/pest": "^2.23",
+        "pestphp/pest-plugin-drift": "^2.5",
+        "phpstan/phpstan": "^1.10",
+        "symfony/browser-kit": "6.3.*",
         "symfony/console": "6.3.*",
+        "symfony/css-selector": "6.3.*",
         "symfony/dotenv": "6.3.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.3.*",
+        "symfony/phpunit-bridge": "^6.3",
         "symfony/runtime": "6.3.*",
         "symfony/yaml": "6.3.*"
-    },
-    "require-dev": {
     },
     "config": {
         "allow-plugins": {
             "php-http/discovery": true,
             "symfony/flex": true,
-            "symfony/runtime": true
+            "symfony/runtime": true,
+            "pestphp/pest-plugin": true
         },
         "sort-packages": true
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
-        }
+            "BenTools\\DoctrineChangeSet\\": "src/",
+            "App\\": "test-app/"
+        },
+        "files": [
+            "src/Tracker/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
             "App\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "ci:check": [
+            "vendor/bin/php-cs-fixer fix",
+            "vendor/bin/phpstan analyse",
+            "vendor/bin/pest --coverage"
+        ]
     },
     "replace": {
         "symfony/polyfill-ctype": "*",
@@ -42,18 +67,6 @@
         "symfony/polyfill-php74": "*",
         "symfony/polyfill-php80": "*",
         "symfony/polyfill-php81": "*"
-    },
-    "scripts": {
-        "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
-        },
-        "post-install-cmd": [
-            "@auto-scripts"
-        ],
-        "post-update-cmd": [
-            "@auto-scripts"
-        ]
     },
     "conflict": {
         "symfony/symfony": "*"
