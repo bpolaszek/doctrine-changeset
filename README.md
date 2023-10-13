@@ -1,3 +1,6 @@
+[![CI Workflow](https://github.com/bpolaszek/doctrine-changeset/actions/workflows/ci.yml/badge.svg)](https://github.com/bpolaszek/doctrine-changeset/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/bpolaszek/doctrine-changeset/branch/main/graph/badge.svg?token=L5ulTaymbt)](https://codecov.io/gh/bpolaszek/doctrine-changeset)
+
 # Doctrine Changes Tracker
 
 This package provides a handful way to determine whether an entity, or a property of an entity, has changed.
