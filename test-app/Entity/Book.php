@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Entity;
+namespace SampleApp\Entity;
 
 use BenTools\DoctrineChangeSet\Tracker\TrackChanges;
 use DateTimeImmutable;

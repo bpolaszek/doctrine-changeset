@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BenTools\DoctrineChangeSet\Tests;
 
-use App\Entity\Book;
-use App\Entity\Metadata;
 use BenTools\DoctrineChangeSet\Tracker\EntityTracker;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use SampleApp\Entity\Book;
+use SampleApp\Entity\Metadata;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 use function BenTools\DoctrineChangeSet\Tracker\oneOf;
