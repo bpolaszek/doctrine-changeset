@@ -3,7 +3,26 @@
 
 # Doctrine Changes Tracker
 
-This package provides a handful way to determine whether an entity, or a property of an entity, has changed.
+This package provides an `EntityTracker` service for your Doctrine entities. 
+This service allows you to easily track changes made to an entity, i.e.
+
+```php
+$entity->name = 'foo';
+$tracker->hasChanged($entity); // true
+$tracker->hasChanged($entity, 'name'); // true
+
+$changeSet=$tracker->getChangeSet($entity, 'name');
+$changeSet->from; // Previous value
+$changeSet->to; // New value
+$changeSet->hadPreviousValue('foo'); // false
+$changeSet->hasNewValue('bar'); // false
+$changeSet->hasChangedFor(null, 'foo'); // true
+$changeSet->hadPreviousValue(whatever()->except(null)); // false
+$changeSet->hasNewValue(oneOf('foo', 'bar')); // true
+```
+
+This package also provides a `#[TrackChanges]` attributes on properties typed as `object` - 
+this allows Doctrine to be aware on changes on nested objects (which isn't the case by default, unless you assign a different object).
 
 ## Usage
 
