@@ -17,6 +17,28 @@ final readonly class EntityTracker
     ) {
     }
 
+    public function tap(object $entity): EntityAwareTracker
+    {
+        return new EntityAwareTracker($this, $entity);
+    }
+
+    public function isAboutToBeInserted(object $entity): bool
+    {
+        return $this->getUnitOfWork($entity)->isScheduledForInsert($entity);
+    }
+
+    public function isAboutToBeUpdated(object $entity): bool
+    {
+        $uow = $this->getUnitOfWork($entity);
+
+        return $uow->isScheduledForUpdate($entity) || $uow->isScheduledForDirtyCheck($entity);
+    }
+
+    public function isAboutToBeRemoved(object $entity): bool
+    {
+        return $this->getUnitOfWork($entity)->isScheduledForDelete($entity);
+    }
+
     public function hasChanged(
         object $entity,
         string $property = null,
