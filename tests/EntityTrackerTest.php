@@ -11,6 +11,7 @@ use SampleApp\Entity\Book;
 use SampleApp\Entity\Metadata;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+use function assert;
 use function BenTools\DoctrineChangeSet\Tracker\oneOf;
 use function BenTools\DoctrineChangeSet\Tracker\whatever;
 
@@ -35,6 +36,9 @@ test('an entity scheduled for insertion is reported as changed', function () {
 
     // Then
     expect($entityChangeSet->hasChanged($book))->toBeTrue()
+        ->and($entityChangeSet->isAboutToBeInserted($book))->toBeTrue()
+        ->and($entityChangeSet->isAboutToBeUpdated($book))->toBeFalse()
+        ->and($entityChangeSet->isAboutToBeRemoved($book))->toBeFalse()
         ->and($entityChangeSet->hasChanged($book, 'title'))->toBeTrue()
         ->and($entityChangeSet->hasChanged($book, 'isbn'))->toBeTrue()
         ->and($entityChangeSet->hasChanged($book, 'createdAt'))->toBeTrue()
@@ -46,6 +50,9 @@ test('an entity scheduled for insertion is reported as changed', function () {
 
     // Then
     expect($entityChangeSet->hasChanged($book))->toBeFalse()
+        ->and($entityChangeSet->isAboutToBeInserted($book))->toBeFalse()
+        ->and($entityChangeSet->isAboutToBeUpdated($book))->toBeFalse()
+        ->and($entityChangeSet->isAboutToBeRemoved($book))->toBeFalse()
         ->and($entityChangeSet->hasChanged($book, 'title'))->toBeFalse()
         ->and($entityChangeSet->hasChanged($book, 'isbn'))->toBeFalse()
         ->and($entityChangeSet->hasChanged($book, 'createdAt'))->toBeFalse()
@@ -66,6 +73,9 @@ test('an unchanged entity is not reported as changed', function () {
 
     // Then
     expect($entityChangeSet->hasChanged($book))->toBeFalse()
+        ->and($entityChangeSet->isAboutToBeInserted($book))->toBeFalse()
+        ->and($entityChangeSet->isAboutToBeUpdated($book))->toBeFalse()
+        ->and($entityChangeSet->isAboutToBeRemoved($book))->toBeFalse()
         ->and($entityChangeSet->hasChanged($book, 'title'))->toBeFalse()
         ->and($entityChangeSet->hasChanged($book, 'isbn'))->toBeFalse()
         ->and($entityChangeSet->hasChanged($book, 'createdAt'))->toBeFalse()
@@ -87,6 +97,9 @@ test('a changed entity is reported as changed', function () {
 
     // Then
     expect($entityChangeSet->hasChanged($book))->toBeTrue()
+        ->and($entityChangeSet->isAboutToBeInserted($book))->toBeFalse()
+        ->and($entityChangeSet->isAboutToBeUpdated($book))->toBeTrue()
+        ->and($entityChangeSet->isAboutToBeRemoved($book))->toBeFalse()
         ->and($entityChangeSet->hasChanged($book, 'title'))->toBeFalse()
         ->and($entityChangeSet->hasChanged($book, 'isbn'))->toBeTrue()
         ->and($entityChangeSet->hasChanged($book, 'createdAt'))->toBeFalse()
@@ -143,6 +156,9 @@ test('a tracked property is reported as changed', function () {
 
     // Then
     expect($entityChangeSet->hasChanged($book))->toBeTrue()
+        ->and($entityChangeSet->isAboutToBeInserted($book))->toBeFalse()
+        ->and($entityChangeSet->isAboutToBeUpdated($book))->toBeTrue()
+        ->and($entityChangeSet->isAboutToBeRemoved($book))->toBeFalse()
         ->and($entityChangeSet->hasChanged($book, 'title'))->toBeTrue()
         ->and($entityChangeSet->hasChanged($book, 'trackedData'))->toBeFalse();
 
@@ -159,4 +175,20 @@ test('a tracked property is reported as changed', function () {
 
     // Then
     expect($book->trackedData->foo)->toEqual('bar');
+});
+
+it('reports an entity as scheduled for removal', function () {
+    $container = $this->getContainer(); // @phpstan-ignore-line
+    /** @var EntityTracker $entityChangeSet */
+    $entityChangeSet = $container->get(EntityTracker::class);
+
+    /** @var EntityManagerInterface $em */
+    $em = $container->get(EntityManagerInterface::class);
+
+    // Given
+    $book = $em->getRepository(Book::class)->findOneBy([]);
+    assert($book instanceof Book);
+
+    $em->remove($book);
+    expect($entityChangeSet->isAboutToBeRemoved($book))->toBeTrue();
 });
