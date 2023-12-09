@@ -17,6 +17,11 @@ final readonly class EntityTracker
     ) {
     }
 
+    public function tap(object $entity): EntityAwareTracker
+    {
+        return new EntityAwareTracker($this, $entity);
+    }
+
     public function isAboutToBeInserted(object $entity): bool
     {
         return $this->getUnitOfWork($entity)->isScheduledForInsert($entity);
